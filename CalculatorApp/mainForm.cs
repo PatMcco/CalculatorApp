@@ -19,6 +19,7 @@ namespace CalculatorApp
         bool hasDecimal = false;
         float firstNonStringNum = 0;
         float secondNonStringNum = 0;
+        string modifiedString = null;
 
         public mainForm()
         {
@@ -148,6 +149,21 @@ namespace CalculatorApp
             }
         }
 
+        private void btnPosNeg_Click(object sender, EventArgs e)
+        {
+            modifiedString = resultBox.Text;
+            char firstChar = modifiedString.First();
+            if (firstChar == '-')
+            {
+                modifiedString = modifiedString.TrimStart('-');
+                resultBox.Text = modifiedString;
+            }
+            else
+            {
+                modifiedString = modifiedString.Insert(0, "-");
+                resultBox.Text = modifiedString;
+            }
+        }
 
         private void btnDecimal_Click(object sender, EventArgs e)
         {
@@ -157,6 +173,50 @@ namespace CalculatorApp
                 resultBox.Text += ((Button)sender).Text;
                 hasDecimal = true;
             }
+        }
+
+        private void btnbackSpace_Click(object sender, EventArgs e)
+        {
+            //make sure resultbox is not empty
+            if(resultBox.Text != "")
+            {
+                //get last char in string
+                modifiedString = resultBox.Text;
+                char lastChar = resultBox.Text.Last();
+                //if it's a decimal, remove decimal and set hasDecimal to false
+                if (resultBox.Text.Last() == '.')
+                {
+                    modifiedString = resultBox.Text.Remove(resultBox.Text.Length - 1, 1);
+                    hasDecimal = false;
+                    resultBox.Text = modifiedString;
+                }
+                //if its not a decimal but is numeric, remove the number
+                else if (char.IsNumber(lastChar))
+                {
+                    modifiedString = resultBox.Text.Remove(resultBox.Text.Length - 1, 1);
+                    resultBox.Text = modifiedString;
+                }
+                //if none of the above, it's a negative symbol, remove it.
+                else
+                {
+                    modifiedString = resultBox.Text.Remove(resultBox.Text.Length - 1, 1);
+                    resultBox.Text = modifiedString;
+                }
+            }
+        }
+
+        private void btnclearEntry_Click(object sender, EventArgs e)
+        {//clears the last entry since pressing an operator, allows decimals again
+            if (resultBox.Text != "")
+            {
+                resultBox.Text = "";
+                if (hasDecimal) { hasDecimal = false; };
+            }
+        }
+
+        private void btnglobalClear_Click(object sender, EventArgs e)
+        {
+            resetCalc();
         }
         //return calculator to empty state
         private void resetCalc()
